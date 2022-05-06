@@ -1,4 +1,4 @@
-load long_modem_rx.mat
+load short_modem_rx.mat
 
 % The received signal includes a bunch of samples from before the
 % transmission started so we need discard these samples that occurred before
@@ -28,10 +28,13 @@ plot(f, fftshift(abs(fft(y_c))))
 % LPF
 
 x_d = conv(y_c, (f_c/Fs)*sinc((f_c/Fs)*[-1000:1000]'))/2;
-x_d = downsample(x_d, 100);
-
-x_d_cut = x_d(12:12+msg_length*8-1);
-
+x_d_down = downsample(x_d, 100);
+above_thresh = find(abs(x_d_down) > 0.009);
+start_point = above_thresh(1);
+end_point = above_thresh(end);
+x_d_cut = x_d_down(start_point+1:end_point+2);
+%pad with 0s
+%x_d_cut = [x_d_cut, zeros((8-mod(length(x_d_cut),8))*mod(length(x_d_cut)>0,8), 1)];
 
 % convert to a string assuming that x_d is a vector of 1s and 0s
 % representing the decoded bits
