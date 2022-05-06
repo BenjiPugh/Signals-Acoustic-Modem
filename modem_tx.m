@@ -1,6 +1,6 @@
 Fs = 8192;
 f_c = 1000;
-bits_to_send = StringToBits('Hello');
+bits_to_send = StringToBits('Hey Diana! Thanks for a great semester. Say "Hi!" to Piglet and Scottie for us!');
 msg_length = length(bits_to_send)/8;
 SymbolPeriod = 100;
 
@@ -10,13 +10,13 @@ m = 2*bits_to_send-1;
 % and a negative box to represent a zero
 m_us = upsample(m, SymbolPeriod);
 m_boxy = conv(m_us, ones(SymbolPeriod, 1));
-plot(m_boxy); % visualize the boxy signal
+%plot(m_boxy); % visualize the boxy signal
 
 % create a cosine with analog frequency f_c
 c = cos(2*pi*f_c/Fs*[0:length(m_boxy)-1]');
 % create the transmitted signal
 x_tx = m_boxy.*c;
-plot(x_tx)  % visualize the transmitted signal
+%plot(x_tx)  % visualize the transmitted signal
 
 % create  noise-like signal 
 % to synchronize the transmission
@@ -31,6 +31,6 @@ x_sync = x_sync/max(abs(x_sync))*0.5;
 x_tx = [x_sync;x_tx];
 save sync_noise.mat x_sync Fs msg_length
 % write the data to a file
-audiowrite('acoustic_modem_short_tx.wav', x_tx, Fs);
+audiowrite('our_message.wav', x_tx, Fs);
 
 
